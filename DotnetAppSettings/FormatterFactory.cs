@@ -4,7 +4,7 @@ namespace DotnetAppSettings;
 
 internal static class FormatterFactory
 {
-    internal static IOutputFormatter Create(bool isMap, bool isEnv, bool isJson, bool isText)
+    internal static IOutputFormatter Create(bool isMap, bool isEnv, bool isJson,bool isJsonObject, bool isText)
     {
         if (isMap)
             return new MapEnvironmentOutputFormatter();
@@ -14,6 +14,9 @@ internal static class FormatterFactory
 
         if (isJson)
             return new JsonEnvironmentOutputFormatter();
+
+        if (isJsonObject)
+          return new JsonObjectEnvironmentOutputFormatter();
 
         return isText ?
             new TextOutputFormatter() :

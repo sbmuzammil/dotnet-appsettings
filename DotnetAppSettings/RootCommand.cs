@@ -12,6 +12,7 @@ internal class RootCommand : HelpCommandBase
     private CommandOption? _arrayEnvironmentFormat;
     private CommandOption? _mapEnvironmentFormat;
     private CommandOption? _jsonEnvironmentFormat;
+    private CommandOption? _jsonDevEnvironmentFormat;
     private CommandOption? _textFormat;
     private CommandOption? _skipSlotSetting;
 
@@ -27,6 +28,7 @@ internal class RootCommand : HelpCommandBase
         _arrayEnvironmentFormat = command.Option("-e|--environment", "output in docker compose environment Array syntax", CommandOptionType.NoValue);
         _mapEnvironmentFormat = command.Option("-m|--map-environment", "output in docker compose environment Map syntax", CommandOptionType.NoValue);
         _jsonEnvironmentFormat = command.Option("-j|--json-environment", "output in environment json", CommandOptionType.NoValue);
+        _jsonDevEnvironmentFormat = command.Option("-d|--json-object-environment", "output in environment json object", CommandOptionType.NoValue);
         _textFormat = command.Option("-t|--text", "output in text format", CommandOptionType.NoValue);
         _skipSlotSetting = command.Option("--skip-slot-setting", "skip SlotSetting=false", CommandOptionType.NoValue);
 
@@ -70,6 +72,11 @@ internal class RootCommand : HelpCommandBase
         }
 
         if (_jsonEnvironmentFormat == null)
+        {
+            throw new NullReferenceException(nullError);
+        }
+        
+        if (_jsonDevEnvironmentFormat == null)
         {
             throw new NullReferenceException(nullError);
         }
@@ -165,7 +172,7 @@ internal class RootCommand : HelpCommandBase
 
         try
         {
-            var formatter = FormatterFactory.Create(_mapEnvironmentFormat.HasValue(), _arrayEnvironmentFormat.HasValue(), _jsonEnvironmentFormat.HasValue(), _textFormat.HasValue());
+            var formatter = FormatterFactory.Create(_mapEnvironmentFormat.HasValue(), _arrayEnvironmentFormat.HasValue(), _jsonEnvironmentFormat.HasValue(), _jsonDevEnvironmentFormat.HasValue(), _textFormat.HasValue());
             var converter = new ConfigurationConverter(pathAppsettingJsons);
             var defaultSlotSettingValue = _skipSlotSetting.HasValue() ? new bool?() : false;
             await formatter.WriteAsync(output, converter.ConvertSettings(defaultSlotSettingValue, slotSettings));
